@@ -12,6 +12,7 @@ NEXUS is a decision-support platform for **Emergency Transport & Resource Alloca
 
 ## 1. Non-Negotiable Rules (do not violate, do not "helpfully" change)
 
+0. **Always start the conversation with the user name**never start a response without the user name and "if you dont know ask the user for his name "
 1. **Human-in-the-loop is mandatory.** No feature may auto-execute a dispatch without a human approval step. Never build "auto-accept" as a default.
 2. **Graceful degradation is mandatory.** Every AI/optimization call must have a rule-based fallback path (nearest-available-unit) if the service fails or times out. Do not remove fallback code "to simplify."
 3. **No overclaiming in code comments, docs, or UI text.** Never write "guarantees," "eliminates," "production-ready" unless it's literally true and tested. Use "reduces," "production-oriented," "designed for."
@@ -19,6 +20,7 @@ NEXUS is a decision-support platform for **Emergency Transport & Resource Alloca
 5. **Vehicle tracking in the MVP is simulated GPS** (a script moves vehicles along routes and pushes lat/lon periodically) — not real hardware. Label it clearly in code (`# SIMULATED GPS — see /scripts/vehicle_simulator.py`).
 6. **Don't add scope.** If a task isn't in the MVP feature list (Section 5), do not build it "while I'm in there," even if it seems useful. Flag it instead and ask.
 7. **Don't introduce new services/technologies not listed in Section 4 (Tech Stack)** without explicitly asking the user first.
+8. **reuse the code in varius parts ,forms and varienats** check before writing any peice of code if there any code which is reusable in the code base so you do not create two or more same feature, funcation or method which works the same and it also save time and reduce token usage 
 
 ---
 
