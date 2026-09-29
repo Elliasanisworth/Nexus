@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function RecommendationCard({ recommendation, ambulances, onAccept, onModify, onReject }) {
+export default function RecommendationCard({ recommendation, ambulances, onAccept, onModify, onReject, onResolve }) {
   const [modifyMode, setModifyMode] = useState(false);
   const [chosenAmbulanceId, setChosenAmbulanceId] = useState("");
 
@@ -26,6 +26,10 @@ export default function RecommendationCard({ recommendation, ambulances, onAccep
   const etaMinutes = Math.round(recommendation.eta_seconds / 60);
   const distanceKm = (recommendation.distance_m / 1000).toFixed(1);
   const isDecided = recommendation.status !== "pending";
+  // "Dispatched" covers both accept and modify — both produce an active
+  // Assignment that can still be resolved to close the loop.
+  const isDispatched = recommendation.status === "accepted" || recommendation.status === "modified";
+  const isResolved = recommendation.status === "resolved";
 
   return (
     <div style={cardStyle}>
@@ -62,6 +66,21 @@ export default function RecommendationCard({ recommendation, ambulances, onAccep
           </button>
           <button onClick={() => setModifyMode(false)}>Cancel</button>
         </div>
+      )}
+
+      {isDispatched && (
+        <div style={{ marginTop: 8 }}>
+          <p style={{ fontSize: 13, opacity: 0.7 }}>
+            🚑 {ambulance?.code || "Ambulance"} is en route.
+          </p>
+          <button onClick={onResolve}>Mark Resolved</button>
+        </div>
+      )}
+
+      {isResolved && (
+        <p style={{ fontSize: 13, color: "#22c55e", marginTop: 8 }}>
+          ✅ Incident resolved — ambulance is available again.
+        </p>
       )}
     </div>
   );

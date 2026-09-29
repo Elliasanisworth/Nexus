@@ -1,15 +1,30 @@
-const statusColor = { available: "#22c55e", busy: "#f59e0b", offline: "#6b7280" };
+import { colors, badgeStyle, monoStyle } from "../theme";
 
 export default function AmbulanceList({ ambulances }) {
   return (
     <div>
-      <h3 style={{ margin: "0 0 8px" }}>Ambulances</h3>
-      {ambulances.length === 0 && <p style={{ opacity: 0.6 }}>None added yet.</p>}
-      <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: colors.textMuted, margin: "0 0 10px" }}>
+        Fleet
+      </div>
+      {ambulances.length === 0 && <p style={{ opacity: 0.5, fontSize: 13 }}>No units registered.</p>}
+      <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 6 }}>
         {ambulances.map((amb) => (
-          <li key={amb.id} style={{ display: "flex", justifyContent: "space-between", padding: "4px 0" }}>
-            <span>🚑 {amb.code}</span>
-            <span style={{ color: statusColor[amb.status] || "#e6e6e6" }}>{amb.status}</span>
+          <li
+            key={amb.id}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "6px 10px",
+              background: colors.panelAlt,
+              border: `1px solid ${colors.border}`,
+              borderRadius: 4,
+            }}
+          >
+            <span style={{ ...monoStyle, fontSize: 13 }}>{amb.code}</span>
+            <span style={badgeStyle(amb.status === "available" ? "resolved" : amb.status === "busy" ? "pending" : "active")}>
+              {amb.status}
+            </span>
           </li>
         ))}
       </ul>

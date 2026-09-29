@@ -1,26 +1,38 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 
-from app.database import Base, engine
-from app import models  # noqa: F401 - needed so tables register on Base before create_all
-from app.routes import ambulances, incidents, recommendation
+from app.db.database import Base, engine, SessionLocal
+from app import models  # noqa: F401 - registers models on Base before create_all
+from app.routes import auth, vehicles, incidents
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="NEXUS Prototype API")
+app = FastAPI(title="NEXUS API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # prototype only - tighten before any real deployment
+    allow_origins=["*"],  # tighten before any real deployment
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.include_router(ambulances.router)
+app.include_router(auth.router)
+app.include_router(vehicles.router)
 app.include_router(incidents.router)
-app.include_router(recommendation.router)
 
 
-@app.get("/")
-def root():
-    return {"status": "ok"}
+@app.get("/health")
+def health():
+    return {"status": "alive"}
+
+
+@app.get("/readiness")
+def readiness():
+    try:
+        db = SessionLocal()
+        db.execute(text("SELECT 1"))
+        db.close()
+        return {"status": "ready", "details": {"database": "ok"}}
+    except Exception as e:
+        return {"status": "not_ready", "details": {"database": f"error: {e}"}}
